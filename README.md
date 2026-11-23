@@ -28,3 +28,9 @@ Run the baseline notebook with `dataset1.csv`. To regenerate the extended input,
 ## Scope and reproducibility
 
 These are legacy exploratory notebooks, not a packaged training pipeline. They contain historical outputs and should be reviewed before treating their reported metrics as comparable results. In particular, verify the target definition, chronological split strategy, and preprocessing before using the experiments as a benchmark. No separate automated test suite or pinned environment is currently provided.
+
+### Known temporal-evaluation limitations
+
+The two MLP experiment notebooks use `train_test_split` with its default shuffling, so observations from later times can appear in the training data while earlier times appear in the holdout. Their `cross_validate(..., cv=5)` calls also operate on the full `X, y`, rather than a separate development-only time series. These historical outputs should not be treated as an unbiased one-hour-ahead forecast benchmark.
+
+For a new experiment, preserve the timestamp, establish the target horizon and feature availability explicitly, split chronologically before fitting any learned preprocessing or selecting models, and reserve the last period for a single final evaluation. The original notebooks and archived results remain unchanged; this notice is not an implementation or validation of a replacement pipeline.
